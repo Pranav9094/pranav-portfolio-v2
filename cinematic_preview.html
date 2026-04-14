@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinematic Scroll Masterpiece</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@800&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <style>
+        :root {
+            --bg: #030305;
+            --accent: #4fffb0;
+            --secondary: #ff9d6e; /* Orange accent for teal/orange grade */
+            --teal: #004d4d;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .cinematic-container {
+            height: 400vh; /* Deep scroll room */
+            position: relative;
+        }
+
+        .sticky-wrapper {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Cinematic Color Grade */
+            background: radial-gradient(circle at 20% 30%, var(--teal) 0%, transparent 40%),
+                        radial-gradient(circle at 80% 70%, #4d2600 0%, transparent 40%);
+        }
+
+        .avatar-box {
+            position: absolute;
+            width: 450px;
+            height: 450px;
+            z-index: 10;
+            filter: blur(20px); /* Initial blur */
+            opacity: 0;
+            transform: scale(0.7);
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            /* Extraction effect */
+            mask-image: radial-gradient(circle, black 60%, transparent 95%);
+            -webkit-mask-image: radial-gradient(circle, black 60%, transparent 95%);
+        }
+
+        .avatar-glow {
+            position: absolute;
+            inset: -20px;
+            background: radial-gradient(circle, rgba(79, 255, 176, 0.2), transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        .text-content {
+            position: relative;
+            z-index: 20;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .main-heading {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(4rem, 12vw, 10rem);
+            margin: 0;
+            line-height: 0.8;
+            opacity: 0;
+            transform: translateY(50px);
+            color: #fff;
+            text-shadow: 0 0 30px rgba(0,0,0,0.8);
+        }
+
+        .sub-heading {
+            font-size: 1.2rem;
+            letter-spacing: 10px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-top: 2rem;
+            opacity: 0;
+        }
+
+        .slide-text {
+            position: absolute;
+            font-size: 1.5rem;
+            max-width: 400px;
+            opacity: 0;
+            line-height: 1.6;
+        }
+
+        .left-block { left: 10vw; text-align: left; bottom: 20%; transform: translateX(-50px); }
+        .right-block { right: 10vw; text-align: right; top: 15%; transform: translateX(50px); }
+
+        /* Social UI Right side */
+        .social-reel {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+            z-index: 100;
+            opacity: 0;
+        }
+
+        .social-icon {
+            width: 24px;
+            height: 24px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(5px);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .social-icon::after {
+            content: '';
+            width: 8px; height: 8px; background: #fff; border-radius: 50%;
+        }
+
+        .social-icon:hover {
+            background: var(--accent);
+            transform: scale(1.2);
+            box-shadow: 0 0 20px var(--accent);
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0.5;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cinematic-container">
+        <div class="sticky-wrapper">
+            
+            <div class="avatar-box" id="avatarBox">
+                <div class="avatar-glow"></div>
+                <img src="cinematic-avatar.png" class="avatar-img" alt="AI Avatar">
+            </div>
+
+            <div class="text-content">
+                <h1 class="main-heading" id="mainHeader">PRANAV CHAUDHARI</h1>
+                <p class="sub-heading" id="subHeader">AI & DATA ARCHITECT</p>
+            </div>
+
+            <div class="slide-text left-block" id="leftBlock">
+                Building the future of <b>intelligent interfaces</b> and data-driven systems.
+            </div>
+
+            <div class="slide-text right-block" id="rightBlock">
+                Turning <b>complex data</b> into elegant, cinematic experiences.
+            </div>
+
+            <div class="social-reel" id="socialBox">
+                <div class="social-icon"></div>
+                <div class="social-icon"></div>
+                <div class="social-icon"></div>
+                <div class="social-icon"></div>
+            </div>
+
+            <div class="scroll-hint">// SCROLL TO EXPLORE</div>
+        </div>
+    </div>
+
+    <div style="height: 100vh; display: flex; align-items: center; justify-content: center; background: #000;">
+        <h2 style="font-family: 'Syne'; font-size: 3rem; opacity: 0.3;">END OF PREVIEW</h2>
+    </div>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        const tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: ".cinematic-container",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 1.5,
+                pin: true,
+                anticipatePin: 1
+            }
+        });
+
+        // Step 1: Entry & Avatar Reveal
+        tl.to("#avatarBox", { opacity: 1, filter: "blur(0px)", scale: 1, duration: 1 })
+          .to("#mainHeader", { opacity: 1, y: 0, duration: 0.8 }, "-=0.5")
+          .to("#subHeader", { opacity: 1, duration: 0.5 }, "-=0.3")
+          .to("#socialBox", { opacity: 1, x: 0, duration: 0.5 }, "-=0.5");
+
+        // Step 2: Parallax & Text Blocks
+        tl.to("#avatarBox", { x: -100, scale: 1.15, duration: 1 }) // Parallax shift left
+          .to("#mainHeader", { x: 50, duration: 1 }, "<") // Shifting text slightly right
+          .to("#leftBlock", { opacity: 1, x: 0, duration: 0.6 }, "-=0.8")
+          .to("#rightBlock", { opacity: 1, x: 0, duration: 0.6 }, "-=0.3");
+
+        // Step 3: Final Zoom & Fade
+        tl.to("#avatarBox", { scale: 1.25, opacity: 0.4, filter: "blur(10px)", duration: 1 })
+          .to(".text-content, .slide-text", { opacity: 0, scale: 0.9, duration: 1 }, "<");
+
+        // UI Interactions
+        document.querySelectorAll('.social-icon').forEach(icon => {
+            icon.addEventListener('mouseenter', () => {
+                gsap.to(icon, { scale: 1.2, duration: 0.3 });
+            });
+        });
+    </script>
+</body>
+</html>

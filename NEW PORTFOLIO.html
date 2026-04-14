@@ -341,7 +341,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background: transparent; /* Using global background */
+      background: transparent;
     }
 
     .cinematic-avatar-box {
@@ -358,9 +358,7 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
-      /* REFINE SILHOUETTE: Isolated bust cutout */
-      mask-image: radial-gradient(ellipse at 50% 40%, black 40%, transparent 68%);
-      -webkit-mask-image: radial-gradient(ellipse at 50% 40%, black 40%, transparent 68%);
+      /* Using High-Res ai-sticker.png (No mask needed) */
     }
 
     .cinematic-text-wrap {
@@ -619,10 +617,10 @@
 
     /* ABOUT */
     #about {
-      padding: 4rem max(3rem, 8vw);
+      padding: 2rem max(3rem, 8vw);
       position: relative;
       background: transparent;
-      margin-top: -15vh; /* Overlap with cinematic fade-out to remove gap */
+      margin-top: -10vh; /* Slide under closing cinematic to eliminate gap */
       z-index: 2;
     }
 
@@ -734,7 +732,7 @@
 
     /* SKILLS */
     #skills {
-      padding: 4rem max(3rem, 8vw);
+      padding: 2rem max(3rem, 8vw);
       background: transparent;
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
@@ -827,7 +825,7 @@
 
     /* PROJECTS */
     #projects {
-      padding: 4rem max(3rem, 8vw);
+      padding: 2rem max(3rem, 8vw);
       position: relative;
       background: transparent;
     }
@@ -971,7 +969,7 @@
 
     /* HACKATHONS */
     #hackathons {
-      padding: 4rem max(3rem, 8vw);
+      padding: 2rem max(3rem, 8vw);
       background: transparent;
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
@@ -1112,7 +1110,7 @@
 
     /* CERTIFICATIONS */
     #certs {
-      padding: 4rem max(3rem, 8vw);
+      padding: 2rem max(3rem, 8vw);
       position: relative;
       background: transparent;
     }
@@ -1206,7 +1204,7 @@
 
     /* CONTACT TERMINAL */
     #contact {
-      padding: 4rem max(3rem, 8vw);
+      padding: 2rem max(3rem, 8vw);
       background: transparent;
       border-top: 1px solid var(--border);
       text-align: center;
@@ -1284,20 +1282,7 @@
       color: var(--accent);
     }
 
-    /* DIVIDERS & SCROLL PROGRESS */
-    .section-divider {
-      width: 100vw;
-      height: 60px; /* Reduced for 'less gap' effect */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-    }
 
-    .divider-canvas {
-      width: 100px;
-      height: 100px;
-    }
 
     .scroll-line {
       position: fixed;
@@ -1529,7 +1514,7 @@
   <section id="cinematic-transition">
     <div class="cinematic-sticky">
       <div class="cinematic-avatar-box" id="cineAvatar">
-        <img src="ai-avatar.png" class="cinematic-img" alt="Pranav Portrait">
+        <img src="ai-sticker.png" class="cinematic-img" alt="Pranav Portrait">
       </div>
       <div class="cinematic-text-wrap">
         <h2 class="cinematic-title" id="cineTitle">DATA<br>ANALYST</h2>
@@ -1881,9 +1866,7 @@
     </div>
   </section>
 
-  <div class="section-divider">
-    <div id="div-canvas-2" class="divider-canvas"></div>
-  </div>
+
 
   <!-- CONTACT -->
   <section id="contact">
@@ -2326,41 +2309,8 @@
       cameraHero.updateProjectionMatrix();
     });
 
-    // --- ADAPTIVE STICKER EXTRACTION (DYNAMIC SAMPLING) ---
-    function extractSticker() {
-      const img = new Image();
-      img.src = 'ai-avatar.png';
-      img.crossOrigin = "Anonymous";
-      img.onload = () => {
-        const canvas = document.getElementById('stickerCanvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx.drawImage(img, 0, 0);
-        
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const data = imageData.data;
-        
-        // Dynamic Sampling: Sample the color at top-left corner
-        const sr = data[0], sg = data[1], sb = data[2];
-        
-        for (let i = 0; i < data.length; i += 4) {
-          const r = data[i], g = data[i+1], b = data[i+2];
-          // Use Euclidean distance for color similarity
-          const dist = Math.sqrt(Math.pow(r - sr, 2) + Math.pow(g - sg, 2) + Math.pow(b - sb, 2));
-          
-          if (dist < 80) { // Tolerance for background colors
-            data[i+3] = 0; 
-          } else if (dist < 110) { // Soft edge anti-aliasing
-            data[i+3] = (dist - 80) / 30 * 255;
-          }
-        }
-        
-        ctx.putImageData(imageData, 0, 0);
-        document.querySelector('.cinematic-img').src = canvas.toDataURL();
-      };
-    }
-    extractSticker();
+    // --- HIGH-RES STICKER LOAD ---
+    // (Adaptive extraction disabled for cleaner ai-sticker.png integration)
 
     // --- CINEMATIC TRANSITION ANIMATION: 350vh ---
     const cineTl = gsap.timeline({

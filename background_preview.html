@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ghost Background Preview</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <style>
+        :root {
+            --bg: #06060a;
+            --accent: #4fffb0;
+            --text: #f0f0f8;
+        }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Syne', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+            height: 300vh; /* Scrollable area */
+        }
+        .bg-face-container {
+            position: fixed;
+            top: 20%;
+            right: 5%;
+            width: 50vw;
+            height: 70vh;
+            z-index: -1;
+            opacity: 0.05; /* Extremely subtle ghost effect */
+            filter: grayscale(1) blur(2px);
+            pointer-events: none;
+        }
+        .bg-face-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
+        }
+        .content-section {
+            padding: 10rem 10vw;
+            max-width: 800px;
+        }
+        h1 { font-size: 5rem; margin-bottom: 2rem; color: var(--accent); }
+        p { font-size: 1.5rem; line-height: 1.6; opacity: 0.8; }
+    </style>
+</head>
+<body>
+
+    <div class="bg-face-container" id="faceParallax">
+        <img src="ai-avatar.png" class="bg-face-img" alt="Background Face">
+    </div>
+
+    <div class="content-section">
+        <h1>Reviewing the Ghost Effect</h1>
+        <p>This is a live preview of how your face will appear in the background of your portfolio. Notice how it is <b>subtle</b> and stays behind the text to ensure your content remains the priority.</p>
+        <p>Scroll down to see the parallax motion in action. I have applied a grayscale filter and low opacity to give it that "Premium Phantom" look you requested.</p>
+    </div>
+
+    <div class="content-section" style="margin-top: 50vh;">
+        <h1>Parallax Motion</h1>
+        <p>As you scroll, the face will move at a different speed than the text. This creates a sense of depth and quality that standard flat designs lack.</p>
+        <p>I can adjust the speed, size, or blur based on your feedback.</p>
+    </div>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Subtle Parallax logic
+        gsap.to("#faceParallax", {
+            y: -150, // Moves up slowly
+            x: -50,  // Drifts slightly left
+            rotation: 2, // Tiny rotation for organic feel
+            scrollTrigger: {
+                trigger: "body",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 1
+            }
+        });
+    </script>
+</body>
+</html>
