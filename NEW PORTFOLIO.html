@@ -1493,7 +1493,6 @@
           <span class="tag">Tailwind CSS</span>
           <span class="tag">Electron.js</span>
           <span class="tag">Three.js</span>
-          <span class="tag">GSAP</span>
         </div>
       </div>
 
@@ -1754,7 +1753,6 @@
 
   <footer>
     <span>Pranav Chaudhari</span>
-    <span>Built with <span style="color:var(--accent3)">♥</span></span>
     <span>© 2026</span>
   </footer>
 
@@ -1763,12 +1761,12 @@
 
     // --- LENIS SMOOTH SCROLL ---
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: 1.5,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       direction: 'vertical',
       gestureDirection: 'vertical',
       smooth: true,
-      mouseMultiplier: 1,
+      mouseMultiplier: 0.8,
       smoothTouch: false,
       touchMultiplier: 2,
       infinite: false,
