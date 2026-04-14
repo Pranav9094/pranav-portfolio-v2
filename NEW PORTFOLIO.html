@@ -18,16 +18,16 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
   <style>
     :root {
-      --bg: #06060a;
-      --surface: #0e0e16;
-      --card: #13131f;
-      --border: rgba(255, 255, 255, 0.07);
+      --bg: #030306;
+      --surface: #0a0a10;
+      --card: rgba(19, 19, 31, 0.4);
+      --border: rgba(255, 255, 255, 0.05);
       --accent: #4fffb0;
       --accent2: #5eb8ff;
-      --accent3: #ff6b6b;
+      --accent3: #ff9d6e; /* Softer orange for teal/orange grade */
       --text: #f0f0f8;
-      --muted: #7070a0;
-      --glow: rgba(78, 255, 176, 0.12);
+      --muted: #8080b0;
+      --glow: rgba(79, 255, 176, 0.08);
       --font-display: 'Syne', sans-serif;
       --font-mono: 'Space Mono', monospace;
       --font-body: 'DM Sans', sans-serif;
@@ -301,6 +301,115 @@
       padding: 0 max(3rem, 8vw);
       overflow: hidden;
       position: relative;
+      background: radial-gradient(circle at 10% 20%, rgba(0, 77, 77, 0.1) 0%, transparent 40%);
+    }
+
+    /* CINEMATIC TRANSITION SECTION */
+    #cinematic-transition {
+      height: 300vh;
+      position: relative;
+      background: var(--bg);
+    }
+
+    .cinematic-sticky {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at 80% 80%, rgba(77, 38, 0, 0.08) 0%, transparent 50%),
+                  radial-gradient(circle at 20% 20%, rgba(0, 77, 77, 0.08) 0%, transparent 50%);
+    }
+
+    .cinematic-avatar-box {
+      position: absolute;
+      width: min(80vw, 500px);
+      height: min(80vw, 500px);
+      z-index: 5;
+      opacity: 0;
+      transform: scale(0.85);
+      filter: blur(15px);
+    }
+
+    .cinematic-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      mask-image: radial-gradient(circle at center, black 50%, transparent 90%);
+      -webkit-mask-image: radial-gradient(circle at center, black 50%, transparent 90%);
+    }
+
+    .cinematic-text-wrap {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .cinematic-title {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 10vw, 7rem);
+      margin: 0;
+      line-height: 0.9;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .cinematic-subtitle {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      letter-spacing: 6px;
+      color: var(--accent);
+      margin-top: 1.5rem;
+      text-transform: uppercase;
+      opacity: 0;
+    }
+
+    .cinematic-slide-text {
+      position: absolute;
+      font-size: 1.1rem;
+      max-width: 320px;
+      opacity: 0;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    .slide-left { left: 10vw; text-align: left; bottom: 25%; }
+    .slide-right { right: 10vw; text-align: right; top: 20%; }
+
+    .social-reel-ui {
+      position: fixed;
+      right: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 1.8rem;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .social-reel-ui.active {
+      opacity: 0.6;
+      pointer-events: auto;
+    }
+
+    .social-dot {
+      width: 10px; height: 10px;
+      border: 1px solid var(--text);
+      border-radius: 50%;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .social-dot:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      transform: scale(1.3);
     }
 
     #webgl-hero {
@@ -489,7 +598,9 @@
 
     /* ABOUT */
     #about {
-      padding: 8rem max(3rem, 8vw);
+      padding: 10rem max(3rem, 8vw);
+      position: relative;
+      background: radial-gradient(circle at 90% 10%, rgba(77, 38, 0, 0.05) 0%, transparent 40%);
     }
 
     .about-grid {
@@ -600,8 +711,8 @@
 
     /* SKILLS */
     #skills {
-      padding: 8rem max(3rem, 8vw);
-      background: var(--surface);
+      padding: 10rem max(3rem, 8vw);
+      background: radial-gradient(circle at 10% 50%, rgba(0, 77, 77, 0.05) 0%, transparent 40%);
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
     }
@@ -692,8 +803,9 @@
 
     /* PROJECTS */
     #projects {
-      padding: 8rem max(3rem, 8vw);
+      padding: 10rem max(3rem, 8vw);
       position: relative;
+      background: radial-gradient(circle at 50% 50%, rgba(0, 77, 77, 0.03) 0%, transparent 60%);
     }
 
     .projects-horizontal-wrapper {
@@ -835,8 +947,8 @@
 
     /* HACKATHONS */
     #hackathons {
-      padding: 8rem max(3rem, 8vw);
-      background: var(--surface);
+      padding: 10rem max(3rem, 8vw);
+      background: radial-gradient(circle at 80% 20%, rgba(0, 77, 77, 0.04) 0%, transparent 50%);
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
       overflow: hidden;
@@ -1339,6 +1451,12 @@
     <div class="scroll-marker" data-section="Contact" onclick="lenis.scrollTo('#contact')"></div>
   </div>
 
+  <div class="social-reel-ui" id="socialReel">
+    <div class="social-dot" onclick="window.open('https://linkedin.com/in/pranav9094', '_blank')"></div>
+    <div class="social-dot" onclick="window.open('https://github.com/Pranav9094', '_blank')"></div>
+    <div class="social-dot" onclick="location.href='mailto:pranavchoudhari9094@gmail.com'"></div>
+  </div>
+
   <!-- NAV -->
   <nav id="navbar">
     <a href="#hero" class="nav-logo">PC_</a>
@@ -1376,6 +1494,25 @@
       </div>
     </div>
     <p class="hero-number">PORTFOLIO • 2026</p>
+  </section>
+
+  <!-- CINEMATIC TRANSITION -->
+  <section id="cinematic-transition">
+    <div class="cinematic-sticky">
+      <div class="cinematic-avatar-box" id="cineAvatar">
+        <img src="ai-avatar.png" class="cinematic-img" alt="Pranav Portrait">
+      </div>
+      <div class="cinematic-text-wrap">
+        <h2 class="cinematic-title" id="cineTitle">DATA<br>ANALYST</h2>
+        <p class="cinematic-subtitle" id="cineSub">Learning Developer</p>
+      </div>
+      <div class="cinematic-slide-text slide-left" id="cineLeft">
+        Leader of national-level <b>hackathon teams</b> and AI systems architect.
+      </div>
+      <div class="cinematic-slide-text slide-right" id="cineRight">
+        Focusing on <b>AI & Data Science</b> @ Parul University.
+      </div>
+    </div>
   </section>
 
   <div class="section-divider">
@@ -2163,6 +2300,30 @@
       cameraHero.aspect = w / h;
       cameraHero.updateProjectionMatrix();
     });
+
+    // --- CINEMATIC TRANSITION ANIMATION ---
+    const cineTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: "#cinematic-transition",
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 1,
+        pin: true,
+        onToggle: self => {
+          document.getElementById('socialReel').classList.toggle('active', self.isActive);
+        }
+      }
+    });
+
+    cineTl
+      .to("#cineAvatar", { opacity: 1, filter: "blur(0px)", scale: 1, duration: 2 })
+      .to("#cineTitle", { opacity: 1, y: 0, duration: 1 }, "-=1")
+      .to("#cineSub", { opacity: 1, duration: 1 }, "-=0.5")
+      .to("#cineAvatar", { x: -80, scale: 1.1, duration: 2 })
+      .to("#cineTitle", { x: 40, duration: 2 }, "<")
+      .to("#cineLeft", { opacity: 1, y: 0, duration: 1 }, "-=1.5")
+      .to("#cineRight", { opacity: 1, y: 0, duration: 1 }, "-=1")
+      .to(".cinematic-sticky", { opacity: 0, scale: 0.9, filter: "blur(10px)", duration: 2 });
 
     // --- QUICK SCRAMBLE TEXT ---
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
