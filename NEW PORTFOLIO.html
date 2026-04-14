@@ -2070,6 +2070,7 @@
     rendererHero.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     const containerHero = document.getElementById('webgl-hero');
     containerHero.appendChild(rendererHero.domElement);
+    containerHero.sceneState = { isActive: true };
 
     const ambientLightHero = new THREE.AmbientLight(0xffffff, 0.2);
     sceneHero.add(ambientLightHero);
@@ -2082,7 +2083,8 @@
     light2.position.set(-2, -2, 2);
     sceneHero.add(light2);
 
-    const sphereGeo = new THREE.SphereGeometry(1.2, 128, 128);
+    // Optimized from 128x128 (16k vertices) down to 48x48 (~2k vertices) to drastically fix CPU noise lag
+    const sphereGeo = new THREE.SphereGeometry(1.2, 48, 48);
     sphereGeo.userData.originalPositions = sphereGeo.attributes.position.clone();
 
     const sphereMat = new THREE.MeshPhysicalMaterial({
@@ -2111,8 +2113,21 @@
       targetTiltY = (e.clientY / window.innerHeight - 0.5) * 0.5;
     });
 
+    // Observer to pause WebGL renders when offscreen
+    const canvasObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.target.sceneState) {
+          entry.target.sceneState.isActive = entry.isIntersecting;
+        }
+      });
+    }, { threshold: 0 });
+    
+    canvasObserver.observe(containerHero);
+
     function renderHero() {
       requestAnimationFrame(renderHero);
+      if (!containerHero.sceneState.isActive) return;
+
       heroTime += 0.005;
 
       const pos = sphereGeo.attributes.position;
@@ -2174,6 +2189,9 @@
     const createDivider = (id, geomType) => {
       const container = document.getElementById(id);
       if(!container) return;
+      container.sceneState = { isActive: false };
+      canvasObserver.observe(container);
+
       const s = new THREE.Scene();
       const c = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
       c.position.z = 4;
@@ -2193,6 +2211,7 @@
       const mesh = new THREE.Mesh(geo, m);
       s.add(mesh);
       gsap.ticker.add(() => {
+        if(!container.sceneState.isActive) return;
         mesh.rotation.y += 0.01;
         mesh.rotation.x += 0.005;
         r.render(s, c);
