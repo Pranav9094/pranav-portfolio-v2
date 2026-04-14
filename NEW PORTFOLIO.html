@@ -320,14 +320,16 @@
       padding: 0 max(3rem, 8vw);
       overflow: hidden;
       position: relative;
-      background: radial-gradient(circle at 10% 20%, rgba(0, 77, 77, 0.1) 0%, transparent 40%);
+      background: transparent; /* Unified with global grade */
     }
 
-    /* CINEMATIC TRANSITION SECTION */
+    /* CINEMATIC TRANSITION SECTION: EPIC 350vh */
     #cinematic-transition {
-      height: 250vh; /* Standardized to 250vh as requested */
+      height: 350vh; 
       position: relative;
       background: transparent;
+      margin-top: -2rem; /* Pulling sections together */
+      margin-bottom: -2rem;
     }
 
     .cinematic-sticky {
@@ -344,13 +346,12 @@
 
     .cinematic-avatar-box {
       position: absolute;
-      width: min(75vw, 420px);
-      height: min(75vw, 420px);
-      z-index: 5;
+      width: min(90vw, 650px); /* Epic Scale */
+      height: min(90vw, 650px);
+      z-index: 1; /* Behind Text */
       opacity: 0;
-      transform: scale(0.9);
-      /* Enhanced drop shadow to define the sticker edge */
-      filter: blur(8px) drop-shadow(0 0 30px rgba(79, 255, 176, 0.4));
+      transform: scale(0.85);
+      filter: blur(12px) drop-shadow(0 0 60px rgba(79, 255, 176, 0.4));
     }
 
     .cinematic-img {
@@ -364,7 +365,7 @@
 
     .cinematic-text-wrap {
       position: relative;
-      z-index: 10;
+      z-index: 10; /* Above Avatar */
       text-align: center;
       pointer-events: none;
     }
@@ -1461,6 +1462,9 @@
     <div class="glow-orb glow-3" id="glow3"></div>
   </div>
 
+  <!-- HIDDEN CANVAS FOR STICKER EXTRACTION -->
+  <canvas id="stickerCanvas" style="display:none;"></canvas>
+
   <div class="cursor" id="cursor"></div>
   <div class="cursor-follower" id="cursorFollower"></div>
   <div class="scroll-line" id="scrollLine"></div>
@@ -2324,13 +2328,44 @@
       cameraHero.updateProjectionMatrix();
     });
 
-    // --- CINEMATIC TRANSITION ANIMATION ---
+    // --- TRUE STICKER EXTRACTION (PIXEL PROCESSING) ---
+    function extractSticker() {
+      const img = new Image();
+      img.src = 'ai-avatar.png';
+      img.crossOrigin = "Anonymous";
+      img.onload = () => {
+        const canvas = document.getElementById('stickerCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+        
+        // Identify background color (approx. light blue from top-left)
+        // We'll use a range to capture the wall/sky
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i], g = data[i+1], b = data[i+2];
+          // Detect light backgrounds (high brightness & slightly bluish)
+          if (r > 150 && g > 180 && b > 200) { 
+            data[i+3] = 0; // Set Alpha to 0
+          }
+        }
+        
+        ctx.putImageData(imageData, 0, 0);
+        document.querySelector('.cinematic-img').src = canvas.toDataURL();
+      };
+    }
+    extractSticker();
+
+    // --- CINEMATIC TRANSITION ANIMATION: 350vh ---
     const cineTl = gsap.timeline({
       scrollTrigger: {
         trigger: "#cinematic-transition",
         start: "top top",
-        end: "+=250vh", // Standardized to 250vh
-        scrub: 0.8,
+        end: "+=350vh", // Epic Run-Room
+        scrub: 1.2,
         pin: true,
         onToggle: self => {
           document.getElementById('socialReel').classList.toggle('active', self.isActive);
@@ -2339,14 +2374,14 @@
     });
 
     cineTl
-      .to("#cineAvatar", { opacity: 1, filter: "blur(0px)", scale: 1, duration: 1 })
-      .to("#cineTitle", { opacity: 1, y: 0, duration: 0.8 }, "-=0.3")
-      .to("#cineSub", { opacity: 1, duration: 0.7 }, "-=0.4")
-      .to("#cineAvatar", { x: -60, scale: 1.05, duration: 1.5 })
-      .to("#cineTitle", { x: 30, duration: 1.5 }, "<")
-      .to("#cineLeft", { opacity: 1, y: 0, duration: 1 }, "-=1.2")
-      .to("#cineRight", { opacity: 1, y: 0, duration: 1 }, "-=0.8")
-      .to(".cinematic-sticky", { opacity: 0, duration: 1, ease: "power2.in" });
+      .to("#cineAvatar", { opacity: 1, filter: "blur(0px)", scale: 1, duration: 1.5 })
+      .to("#cineTitle", { opacity: 1, y: 0, duration: 1 }, "-=0.5")
+      .to("#cineSub", { opacity: 1, duration: 1 }, "-=0.6")
+      .to("#cineAvatar", { x: -80, scale: 1.1, duration: 2.5 })
+      .to("#cineTitle", { x: 50, duration: 2.5 }, "<")
+      .to("#cineLeft", { opacity: 1, y: 0, duration: 1.2 }, "-=1.8")
+      .to("#cineRight", { opacity: 1, y: 0, duration: 1.2 }, "-=1.2")
+      .to(".cinematic-sticky", { opacity: 0, scale: 0.9, duration: 1.5, ease: "power2.in" });
 
     // Global ambient grade motion reactive logic
     document.addEventListener('mousemove', e => {
