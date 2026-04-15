@@ -618,7 +618,7 @@
 
     /* ABOUT */
     #about {
-      padding: 6rem max(3rem, 8vw) 2rem;
+      padding: 2rem max(3rem, 8vw) 2rem;
       position: relative;
       background: var(--bg);
       z-index: 2;
@@ -830,7 +830,7 @@
 
     /* PROJECTS (Standard Native Grid Scrolling) */
     #projects {
-      padding: 6rem max(3rem, 8vw);
+      padding: 2rem max(3rem, 8vw);
       position: relative;
       z-index: 10;
       background: var(--bg);
@@ -838,11 +838,11 @@
     }
 
     .projects-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      display: flex;
       gap: 3rem;
-      width: 100%;
+      width: max-content;
       margin-top: 3rem;
+      padding-right: 10vw;
     }
 
     .project-card {
@@ -1452,6 +1452,10 @@
         background-size: 92% auto;
         mix-blend-mode: luminosity;
       }
+      #cinematic-transition {
+        height: 100vh;
+        margin-top: 0;
+      }
 
       .slide-left,
       .slide-right {
@@ -1529,11 +1533,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0.5rem 0;
+      padding: 0.1rem 0;
       position: relative;
       z-index: 2;
       opacity: 0;
-      height: 110px;
+      height: 60px;
       overflow: visible;
     }
 
@@ -1627,19 +1631,6 @@
       </div>
     </div>
     <p class="hero-number">PORTFOLIO • 2026</p>
-  </section>
-
-  <!-- ABOUT -->
-  <div class="cinematic-text-wrap" id="cineTextWrap">
-    <h2 class="cinematic-title" id="cineTitle">DATA<br>ANALYST</h2>
-    <p class="cinematic-subtitle" id="cineSub">Learning Developer</p>
-  </div>
-  <div class="cinematic-slide-text slide-left" id="cineLeft">
-    Leader of national-level <b>hackathon teams</b> and AI systems architect.
-  </div>
-  <div class="cinematic-slide-text slide-right" id="cineRight">
-    Focusing on <b>AI &amp; Data Science</b> @ Parul University.
-  </div>
   </section>
 
   <!-- ABOUT -->
@@ -2038,12 +2029,12 @@
 
     // --- LENIS SMOOTH SCROLL ---
     const lenis = new Lenis({
-      duration: 1.5,
+      duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       direction: 'vertical',
       gestureDirection: 'vertical',
       smooth: true,
-      mouseMultiplier: 0.8,
+      mouseMultiplier: 1.0,
       smoothTouch: false,
       touchMultiplier: 2,
       infinite: false,
@@ -2182,7 +2173,8 @@
     function getScrollAmount() {
       const list = document.querySelector('.projects-list');
       if (!list) return 0;
-      return list.scrollWidth - window.innerWidth + parseFloat(getComputedStyle(list).paddingRight);
+      // Using clientWidth/scrollWidth for flex is more reliable
+      return list.scrollWidth - window.innerWidth + (window.innerWidth * 0.1); 
     }
 
     // --- PROJECTS HORIZONTAL SCROLL ---
@@ -2515,6 +2507,8 @@
       }
     );
 
+    // Final refresh to ensure all pinned sections are accounted for
+    ScrollTrigger.refresh();
   </script>
 </body>
 
