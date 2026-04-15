@@ -1,0 +1,19 @@
+{
+  "name": "pranav-portfolio",
+  "version": "1.0.0",
+  "description": "Premium AI & Data Developer Portfolio",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "npx serve ."
+  },
+  "keywords": [
+    "portfolio",
+    "ai",
+    "data-developer",
+    "gsap",
+    "threejs"
+  ],
+  "author": "Pranav Chaudhari",
+  "license": "MIT"
+}
