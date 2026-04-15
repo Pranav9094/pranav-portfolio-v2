@@ -342,21 +342,22 @@
 
     .hero-avatar-bg {
       position: absolute;
-      top: 0;
+      top: 12%; /* Moved lower */
       right: 0;
       height: 100%;
       width: 50%;
       z-index: 1;
       background-image: url('ai-sticker.png');
-      background-size: cover;
-      background-position: center right 10%;
+      background-size: 85% auto; /* Contain-like to avoid edge stretching */
+      background-position: center right 15%;
       background-repeat: no-repeat;
       mix-blend-mode: screen;
-      opacity: 0.6;
-      filter: contrast(1.1) saturate(1.2) brightness(0.9);
+      opacity: 0.7;
+      filter: contrast(1.1) saturate(1.2) brightness(0.95);
       will-change: transform;
-      -webkit-mask-image: radial-gradient(circle at center, black 60%, transparent 100%);
-      mask-image: radial-gradient(circle at center, black 60%, transparent 100%);
+      /* Tighter mask to cut off any remaining side borders */
+      -webkit-mask-image: radial-gradient(ellipse 50% 70% at 50% 50%, black 30%, transparent 95%);
+      mask-image: radial-gradient(ellipse 50% 70% at 50% 50%, black 30%, transparent 95%);
     }
 
     .hero-avatar-bg::before {
@@ -1595,9 +1596,6 @@
   <section id="hero">
     <!-- Image placed behind the name text (z-index 1, content is z-index 10) -->
     <div class="hero-avatar-bg"></div>
-    <div class="hero-orb orb-1"></div>
-    <div class="hero-orb orb-2"></div>
-    <div id="webgl-hero"></div>
     <div class="hero-content">
       <p class="hero-tag">// Available for Internships & Collaborations</p>
       <h1 class="hero-name">
@@ -2310,14 +2308,6 @@
       scrub: 1
     });
 
-    // --- ORB PARALLAX ---
-    document.addEventListener('mousemove', e => {
-      const x = (e.clientX / window.innerWidth - 0.5) * 40;
-      const y = (e.clientY / window.innerHeight - 0.5) * 40;
-      gsap.to('.orb-1', { x: x * 0.5, y: y * 0.5, duration: 1.5, ease: 'power1.out' });
-      gsap.to('.orb-2', { x: x * 0.8, y: y * 0.8, duration: 1.5, ease: 'power1.out' });
-    });
-
     // --- MAGNETIC BUTTONS ---
     document.querySelectorAll('.btn-primary, .btn-outline').forEach(btn => {
       btn.addEventListener('mousemove', e => {
@@ -2330,106 +2320,6 @@
         gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.3)' });
       });
     });
-
-    // --- WEBGL HERO SCENE ---
-    const sceneHero = new THREE.Scene();
-    const wHero = window.innerWidth * (window.innerWidth > 768 ? 0.5 : 1);
-    const hHero = window.innerHeight;
-    const cameraHero = new THREE.PerspectiveCamera(45, wHero / hHero, 0.1, 1000);
-    cameraHero.position.z = 5;
-
-    const rendererHero = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    rendererHero.setSize(wHero, hHero);
-    rendererHero.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    const containerHero = document.getElementById('webgl-hero');
-    containerHero.appendChild(rendererHero.domElement);
-    containerHero.sceneState = { isActive: true };
-
-    const ambientLightHero = new THREE.AmbientLight(0xffffff, 0.2);
-    sceneHero.add(ambientLightHero);
-
-    const light1 = new THREE.PointLight(0x4fffb0, 2, 50);
-    light1.position.set(2, 2, 2);
-    sceneHero.add(light1);
-
-    const light2 = new THREE.PointLight(0x5eb8ff, 2, 50);
-    light2.position.set(-2, -2, 2);
-    sceneHero.add(light2);
-
-    // Optimized from 128x128 (16k vertices) down to 48x48 (~2k vertices) to drastically fix CPU noise lag
-    const sphereGeo = new THREE.SphereGeometry(1.2, 48, 48);
-    sphereGeo.userData.originalPositions = sphereGeo.attributes.position.clone();
-
-    const sphereMat = new THREE.MeshPhysicalMaterial({
-      color: 0x0d0d14,
-      emissive: 0x000d1a,
-      roughness: 0.1,
-      metalness: 0.8,
-      transparent: true,
-      opacity: 0.8,
-      transmission: 0.9,
-      thickness: 1.0,
-      clearcoat: 1.0,
-      clearcoatRoughness: 0.1
-    });
-
-    const aiSphere = new THREE.Mesh(sphereGeo, sphereMat);
-    sceneHero.add(aiSphere);
-
-    const simplex = new SimplexNoise();
-    let heroTime = 0;
-    let targetTiltX = 0;
-    let targetTiltY = 0;
-
-    document.addEventListener('mousemove', e => {
-      targetTiltX = (e.clientX / window.innerWidth - 0.5) * 0.5;
-      targetTiltY = (e.clientY / window.innerHeight - 0.5) * 0.5;
-    });
-
-    // Observer to pause WebGL renders when offscreen
-    const canvasObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.target.sceneState) {
-          entry.target.sceneState.isActive = entry.isIntersecting;
-        }
-      });
-    }, { threshold: 0 });
-
-    canvasObserver.observe(containerHero);
-
-    function renderHero() {
-      requestAnimationFrame(renderHero);
-      if (!containerHero.sceneState.isActive) return;
-
-      heroTime += 0.005;
-
-      const pos = sphereGeo.attributes.position;
-      const origPos = sphereGeo.userData.originalPositions;
-
-      for (let i = 0; i < pos.count; i++) {
-        const v = new THREE.Vector3().fromBufferAttribute(origPos, i);
-        const n = simplex.noise3D(v.x * 1.5 + heroTime, v.y * 1.5 + heroTime, v.z * 1.5);
-        v.normalize().multiplyScalar(1.2 + n * 0.15);
-        pos.setXYZ(i, v.x, v.y, v.z);
-      }
-
-      pos.needsUpdate = true;
-      sphereGeo.computeVertexNormals();
-
-      aiSphere.rotation.y += 0.002;
-      aiSphere.rotation.z += 0.001;
-
-      light1.position.x = Math.sin(heroTime * 2) * 3;
-      light1.position.z = Math.cos(heroTime * 2) * 3;
-      light2.position.x = Math.sin(heroTime * 1.5 + Math.PI) * 3;
-      light2.position.z = Math.cos(heroTime * 1.5 + Math.PI) * 3;
-
-      sceneHero.rotation.x += (targetTiltY - sceneHero.rotation.x) * 0.05;
-      sceneHero.rotation.y += (targetTiltX - sceneHero.rotation.y) * 0.05;
-
-      rendererHero.render(sceneHero, cameraHero);
-    }
-    renderHero();
 
     window.addEventListener('resize', () => {
       const w = window.innerWidth * (window.innerWidth > 768 ? 0.5 : 1);
