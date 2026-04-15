@@ -342,13 +342,15 @@
 
     .hero-avatar-bg {
       position: absolute;
-      top: 12%; /* Moved lower */
+      top: 12%;
+      /* Moved lower */
       right: 0;
       height: 100%;
       width: 50%;
       z-index: 1;
       background-image: url('ai-sticker.png');
-      background-size: 85% auto; /* Contain-like to avoid edge stretching */
+      background-size: 85% auto;
+      /* Contain-like to avoid edge stretching */
       background-position: center right 15%;
       background-repeat: no-repeat;
       mix-blend-mode: screen;
@@ -365,8 +367,8 @@
       position: absolute;
       inset: 0;
       z-index: -1;
-      background: radial-gradient(circle at center, rgba(0,245,160,0.15) 0%, transparent 60%),
-                  radial-gradient(circle at center 60%, rgba(255,140,0,0.1) 0%, transparent 70%);
+      background: radial-gradient(circle at center, rgba(0, 245, 160, 0.15) 0%, transparent 60%),
+        radial-gradient(circle at center 60%, rgba(255, 140, 0, 0.1) 0%, transparent 70%);
       pointer-events: none;
     }
 
@@ -375,9 +377,9 @@
       position: absolute;
       inset: 0;
       z-index: 2;
-      background: 
-        linear-gradient(110deg, transparent 20%, rgba(255,255,255,0.08) 40%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.08) 60%, transparent 80%),
-        linear-gradient(135deg, rgba(0,205,120,0.15), rgba(255,140,0,0.15)),
+      background:
+        linear-gradient(110deg, transparent 20%, rgba(255, 255, 255, 0.08) 40%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.08) 60%, transparent 80%),
+        linear-gradient(135deg, rgba(0, 205, 120, 0.15), rgba(255, 140, 0, 0.15)),
         url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
       background-size: 200% 100%, 100% 100%, 150px 150px;
       mix-blend-mode: overlay;
@@ -387,8 +389,13 @@
     }
 
     @keyframes heroLightSweep {
-      0% { background-position: -200% 0, 0 0, 0 0; }
-      100% { background-position: 200% 0, 0 0, 0 0; }
+      0% {
+        background-position: -200% 0, 0 0, 0 0;
+      }
+
+      100% {
+        background-position: 200% 0, 0 0, 0 0;
+      }
     }
 
 
@@ -471,7 +478,7 @@
     }
 
     .hero-name {
-      font-size: clamp(3.5rem, 10vw, 8rem);
+      font-size: clamp(1.5rem, 5vw, 4rem);
       font-weight: 800;
       line-height: 0.9;
       margin-bottom: 1.5rem;
@@ -1373,9 +1380,13 @@
         background-position: center;
         -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 90%);
         mask-image: radial-gradient(circle at center, black 40%, transparent 90%);
-        animation: none; /* Disable heavy animation on mobile */
+        animation: none;
+        /* Disable heavy animation on mobile */
       }
-      .hero-avatar-bg::after { animation: none; }
+
+      .hero-avatar-bg::after {
+        animation: none;
+      }
 
       nav {
         padding: 1rem 1.5rem;
@@ -2488,13 +2499,13 @@
     });
 
     // --- HERO AVATAR PARALLAX ---
-    gsap.fromTo(".hero-avatar-bg", 
+    gsap.fromTo(".hero-avatar-bg",
       { scale: 1, y: 0, opacity: 0.6 },
-      { 
-        scale: 1.12, 
-        y: -40, 
-        opacity: 1, 
-        ease: "none", 
+      {
+        scale: 1.12,
+        y: -40,
+        opacity: 1,
+        ease: "none",
         scrollTrigger: {
           trigger: "#hero",
           start: "top top",
